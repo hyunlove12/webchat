@@ -1,0 +1,134 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<!--
+	Snapshot by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+<head>
+		<title>Snapshot by TEMPLATED</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+<div class="page-wrap">
+			<!-- Main -->
+			<section id="main">
+				<!-- Contact -->
+				<section id="contact">
+					<!-- Social -->
+					<div class="social column">
+						<h3>About Me</h3>
+						<p>Mus sed interdum nunc dictum rutrum scelerisque erat a parturient condimentum potenti dapibus vestibulum condimentum per tristique porta. Torquent a ut consectetur a vel ullamcorper a commodo a mattis ipsum class quam sed eros vestibulum quisque a eu nulla scelerisque a elementum vestibulum.</p>
+						<p>Aliquet dolor ultricies sem rhoncus dolor ullamcorper pharetra dis condimentum ullamcorper rutrum vehicula id nisi vel aptent orci litora hendrerit penatibus erat ad sit. In a semper velit eleifend a viverra adipiscing a phasellus urna praesent parturient integer ultrices montes parturient suscipit posuere quis aenean. Parturient euismod ultricies commodo arcu elementum suspendisse id dictumst at ut vestibulum conubia quisque a himenaeos dictum proin dis purus integer mollis parturient eros scelerisque dis libero parturient magnis.</p>
+						<h3>Follow Me</h3>
+						<ul class="icons">
+							<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
+							<li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+							<li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+						</ul>
+					</div>
+
+					<!-- Form -->
+					<div class="column">
+						<h3>채팅참가</h3>
+						<div class="field half first">
+								<label for="nikName">닉네임</label>
+								<input name="nikName" id="nikName" type="text" placeholder="닉네임 입력">
+						</div>
+						<div class="field half first">							
+								<input type="button" name="submit" id="join"  value="참가">
+						</div>
+						<div class="field">
+								<label for="chatText"></label>
+								<input name="chatText" id="chatText" type="text" placeholder="채팅을 입력하세요">
+						</div>
+						<div class="field">
+								<input type="button" name="submit" id="submit"  value="전송">								
+						</div>
+						
+						
+						<div id="mainText">
+						
+						</div>
+					</div>
+				</section>
+
+				<!-- Footer -->
+				<footer id="footer">
+					<div class="copyright">
+						&copy; Untitled Design: <a href="https://templated.co/">TEMPLATED</a>. images: <a href="https://unsplash.com/">Unsplash</a>.
+					</div>
+				</footer>
+			</section>
+		</div>
+
+		<!-- Scripts -->
+		<script src="js/jquery.min.js"></script>
+		<script src="js/jquery.poptrox.min.js"></script>
+		<script src="js/jquery.scrolly.min.js"></script>
+		<script src="js/skel.min.js"></script>
+		<script src="js/util.js"></script>
+		<script src="js/main.js"></script>
+</body>
+<script type="text/javascript">
+
+	var ws = null;
+	$(document).ready(function(){	
+		
+		$("#join").click(function(){
+			alert('connect호출!');
+			connect();
+		});		
+		$("#submit").click(function(){
+			alert('메시지 전송!');
+			send();
+		});	
+		
+	});
+	
+	function connect() {
+		 var target = "ws://localhost:8080/webchat/echo.do";
+			 //?usr=홍길동"; //서버에서 파라미터를 	
+		 if ('WebSocket' in window) {
+			 alert('websocket');
+		     ws = new WebSocket(target);		     
+		 } else if ('MozWebSocket' in window) {
+			 alert('mozwebsocket');
+		     ws = new MozWebSocket(target);
+		 } else {
+		     alert('WebSocket is not supported by this browser.');
+		     return;
+		 }	
+		 ws.onopen = function () {
+		    // document.getElementById("msg").innerText = 'Info: WebSocket connection opened.';
+		 };	
+	 	 ws.onmessage = function (event) {
+	 		 alert(event);
+	 		 alert(event.data + '123');
+			// document.getElementById("msg").innerText = 'Received: '+event.data;
+		 };	
+		 ws.onclose = function () {
+		    // document.getElementById("msg").innerText = 'Info: WebSocket connection closed.';
+		 }; 
+	}
+	
+	function send() {// JSON 문자열을 서버로 전송한다
+		var msg = {
+			"nickName":"홍길동", "content":"test"
+		};
+		var jsonStr = JSON.stringify(msg);
+		ws.send(jsonStr);
+	}
+	
+	function sendFile() {
+		// Sending file as Blob
+		var file = document.querySelector('input[type="file"]').files[0];
+		ws.send(file);
+	}
+		
+</script>
+</html>
