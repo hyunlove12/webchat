@@ -91,7 +91,7 @@
 	});
 	
 	function connect() {
-		 var target = "ws://localhost:8080/webchat/echo.do";
+		 var target = "ws://localhost:8080/webchat/echo.do?userId=hong";
 			 //?usr=홍길동"; //서버에서 파라미터를 	
 		 if ('WebSocket' in window) {
 			 alert('websocket');
@@ -106,10 +106,14 @@
 		 ws.onopen = function () {
 		    // document.getElementById("msg").innerText = 'Info: WebSocket connection opened.';
 		 };	
+		 //메시지 수신해주는 함수
 	 	 ws.onmessage = function (event) {
-	 		 alert(event);
-	 		 alert(event.data + '123');
-			// document.getElementById("msg").innerText = 'Received: '+event.data;
+			 console.log(event);
+			 alert('event' + event.data.nickName);
+			 alert('event' + event.data['nickName']);
+			 //alert('data' + event.data);
+			 //alert(event.keys('nickName'));
+			 document.getElementById("mainText").innerText = 'Received: '+event.data;
 		 };	
 		 ws.onclose = function () {
 		    // document.getElementById("msg").innerText = 'Info: WebSocket connection closed.';

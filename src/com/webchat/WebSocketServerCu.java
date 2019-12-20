@@ -9,11 +9,12 @@ import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
 import javax.websocket.Session;
+import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
 @ServerEndpoint(value="/echo.do")
 public class WebSocketServerCu {
-	
+	 /*https://www.oracle.com/technical-resources/articles/java/jsr356.html 참고 페이지*/
 	 private static Set<Session> clients = Collections.synchronizedSet(new HashSet<Session>());
 	    
 	    @OnMessage
@@ -29,8 +30,9 @@ public class WebSocketServerCu {
 	    }
 	    
 	    @OnOpen
-	    public void onOpen(Session session) {
-	        System.out.println(session);
+	    public void onOpen(@PathParam("userId")String userId, Session session) {	    	
+	    	System.out.println(userId);
+	    	System.out.println(session.getId());	    	
 	        clients.add(session);
 	    }
 	    
