@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
 import javax.websocket.OnOpen;
@@ -36,19 +34,18 @@ public class WebSocketServerCu {
 	    
 	    @OnOpen
 	    public void onOpen(Session session) {
+	    	//여기서 session이 무엇인지...id + session id 로 값 저장하여 중복 체크
 	    	//request못 받네...?
 	    	// HttpServletRequest req, HttpServletResponse res
 	    	//System.out.println(req.getContextPath());
 	    	String pathUserId = session.getPathParameters().get("userId");
-	    	for(String id : userId) {
-	    		//System.out.println(id);
-	    		//System.out.println(session.getPathParameters().get("userId"));
-                if(id.equals(session.getPathParameters().get("userId"))) {	                	
-                   System.out.println("중복된 아이디 입니다.");
-                   return;
-                }
-            }
-	        System.out.println("이것도?");
+		/*
+		 * for(String id : userId) { //System.out.println(id);
+		 * //System.out.println(session.getPathParameters().get("userId"));
+		 * if(id.equals(session.getPathParameters().get("userId"))) {
+		 * System.out.println("중복된 아이디 입니다."); return; } }
+		 */
+	       
 	    	//System.out.println(userId);
 	    	//System.out.println(session.getPathParameters().get("userId"));
 	    	//System.out.println(session.getUserProperties().keySet() + "뭐냐");
@@ -61,6 +58,9 @@ public class WebSocketServerCu {
 	    
 	    @OnClose
 	    public void onClose(Session session) {
+	    	//System.out.println("종료!");
+	    	//System.out.println(session.getPathParameters().get("userId"));
 	        clients.remove(session);
+	        userId.remove(session.getPathParameters().get("userId"));
 	    }
 }

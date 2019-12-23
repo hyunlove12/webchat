@@ -24,7 +24,7 @@
 					<div class="social column">
 						<h3>CHAT WITH US</h3>
 						<p>안녕하세요!</p>
-						<p>아는사람만 들어 올 수 있는 허접한 채팅 방입니다.</p>						
+						<p>아는사람만 들어 올 수 있는 허접한 채팅 방입니다. <h3>mina & dh</h3></p>						
 						<p>공부중이라 수정 및 추가할게 많아요...^^</p>
 						<h3>Follow Me</h3>
 						<ul class="icons">
@@ -49,7 +49,7 @@
 								<input name="chatText" id="chatText" type="text" placeholder="채팅을 입력하세요"  onkeyup="javascript:fn_enter()">
 						</div>
 						<div class="field text-right textChat hide">
-								<input type="button" name="submit" id="submit"  value="전송">								
+								<input type="button" name="txSubmit" id="txSubmit"  value="전송">								
 								<input type="button" name="closeChat" id="closeChat"  value="종료" >
 						</div>						
 						
@@ -93,12 +93,14 @@
 				nickName = '';
 			}
 		});		
-		$("#submit").click(function(){
+		$("#txSubmit").click(function(){
 			send();
 		});	
 		
-		$("#closeChat").click(function(){
+		$("#closeChat").click(function(){					
 			ws.onclose();
+			ws.close();
+			alert('연결종료!');
 		});
 		
 	});
@@ -143,7 +145,7 @@
 			 var msg = message[1];
 			 var align = message[2];
 			 if(align != null && align != ''){
-				 $("#mainText").append('<p class="text-right">' + id + ':' + msg + '</p>');	 
+				 $("#mainText").append('<p class="text-right">' + id + ':' + msg + '</p>');
 			 } else {
 				 $("#mainText").append('<p>' + id + ':' + msg + '</p>');
 			 }
@@ -152,7 +154,7 @@
 			 
 		 };	
 		 ws.onclose = function () {
-			 alert('연결종료!');
+			// alert('두번 호출// ws.close함수가 오리지날 함수인듯...');
 			 $(".joinChat").removeClass("hide");
 			 $(".textChat").addClass("hide");
 		    // document.getElementById("msg").innerText = 'Info: WebSocket connection closed.';
@@ -169,6 +171,10 @@
 	//	ws.onopen = () => ws.send('hello');
 		//ws.send(jsonStr);
 		ws.send(msg);
+		//채팅 초기화
+		$("#chatText").val('');
+
+		
 //		ws.send(message);
 	}
 	
