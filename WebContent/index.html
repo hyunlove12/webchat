@@ -12,6 +12,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="stylesheet" href="css/main.css" />
+		<link rel="stylesheet" href="css/bootstrap.css" />
 </head>
 <body>
 <div class="page-wrap">
@@ -21,9 +22,10 @@
 				<section id="contact">
 					<!-- Social -->
 					<div class="social column">
-						<h3>About Me</h3>
-						<p>Mus sed interdum nunc dictum rutrum scelerisque erat a parturient condimentum potenti dapibus vestibulum condimentum per tristique porta. Torquent a ut consectetur a vel ullamcorper a commodo a mattis ipsum class quam sed eros vestibulum quisque a eu nulla scelerisque a elementum vestibulum.</p>
-						<p>Aliquet dolor ultricies sem rhoncus dolor ullamcorper pharetra dis condimentum ullamcorper rutrum vehicula id nisi vel aptent orci litora hendrerit penatibus erat ad sit. In a semper velit eleifend a viverra adipiscing a phasellus urna praesent parturient integer ultrices montes parturient suscipit posuere quis aenean. Parturient euismod ultricies commodo arcu elementum suspendisse id dictumst at ut vestibulum conubia quisque a himenaeos dictum proin dis purus integer mollis parturient eros scelerisque dis libero parturient magnis.</p>
+						<h3>CHAT WITH US</h3>
+						<p>안녕하세요!</p>
+						<p>아는사람만 들어 올 수 있는 허접한 채팅 방입니다.</p>						
+						<p>공부중이라 수정 및 추가할게 많아요...^^</p>
 						<h3>Follow Me</h3>
 						<ul class="icons">
 							<li><a href="#" class="icon fa-twitter"><span class="label">Twitter</span></a></li>
@@ -34,29 +36,31 @@
 
 					<!-- Form -->
 					<div class="column">
-						<h3>채팅참가</h3>
-						<div class="field half first">
+						<h3>채팅!</h3>
+						<div class="field half first joinChat">
 								<label for="nikName">닉네임</label>
 								<input name="nikName" id="nikName" type="text" placeholder="닉네임 입력">
 						</div>
-						<div class="field half first">							
+						<div class="field half first text-right joinChat">							
 								<input type="button" name="submit" id="join"  value="참가">
 						</div>
-						<div class="field">
+						<div class="field textChat hide">
 								<label for="chatText"></label>
-								<input name="chatText" id="chatText" type="text" placeholder="채팅을 입력하세요">
+								<input name="chatText" id="chatText" type="text" placeholder="채팅을 입력하세요"  onkeyup="javascript:fn_enter()">
 						</div>
-						<div class="field">
+						<div class="field text-right textChat hide">
 								<input type="button" name="submit" id="submit"  value="전송">								
-						</div>
-						
+								<input type="button" name="closeChat" id="closeChat"  value="종료" >
+						</div>						
 						
 						<div id="mainText">
 						
 						</div>
 					</div>
 				</section>
-
+				
+				
+				
 				<!-- Footer -->
 				<footer id="footer">
 					<div class="copyright">
@@ -77,55 +81,95 @@
 <script type="text/javascript">
 
 	var ws = null;
+	var nickName = '';
 	$(document).ready(function(){	
 		
 		$("#join").click(function(){
-			alert('connect호출!');
-			connect();
+			//alert('connect호출!');
+			nickName = $("#nikName").val();
+			if(nickName == 'mina' || nickName == 'dh'){
+				connect();				
+			} else {
+				nickName = '';
+			}
 		});		
 		$("#submit").click(function(){
-			alert('메시지 전송!');
 			send();
 		});	
 		
+		$("#closeChat").click(function(){
+			ws.onclose();
+		});
+		
 	});
 	
-	function connect() {
-		 var target = "ws://localhost:8080/webchat/echo.do?userId=hong";
+	function fn_enter(){
+		//alert(1);
+		if (window.event.keyCode == 13) {
+			send();
+        }		
+	}
+	
+	function connect() {		
+		 
+		 //var target = "ws://localhost:8081/echo.do/" + nickName;		 
+		 var target = "ws://203.245.44.21:8073/echo.do/" + nickName;
+		 		 
 			 //?usr=홍길동"; //서버에서 파라미터를 	
-		 if ('WebSocket' in window) {
-			 alert('websocket');
+		 if ('WebSocket' in window) {			
 		     ws = new WebSocket(target);		     
-		 } else if ('MozWebSocket' in window) {
-			 alert('mozwebsocket');
+		 } else if ('MozWebSocket' in window) {			 
 		     ws = new MozWebSocket(target);
 		 } else {
 		     alert('WebSocket is not supported by this browser.');
 		     return;
 		 }	
 		 ws.onopen = function () {
+			 alert('서버연결!');
+			 $(".joinChat").addClass("hide");
+			 $(".textChat").removeClass("hide");
 		    // document.getElementById("msg").innerText = 'Info: WebSocket connection opened.';
 		 };	
 		 //메시지 수신해주는 함수
 	 	 ws.onmessage = function (event) {
 			 console.log(event);
-			 alert('event' + event.data.nickName);
-			 alert('event' + event.data['nickName']);
+		//	 alert('event' + event.data.nickName);
+			// alert('event' + event.data['nickName']);
 			 //alert('data' + event.data);
 			 //alert(event.keys('nickName'));
-			 document.getElementById("mainText").innerText = 'Received: '+event.data;
+			 var message = event.data.split(':');
+			 //alert(message);
+			 var id = message[0];
+			 var msg = message[1];
+			 var align = message[2];
+			 if(align != null && align != ''){
+				 $("#mainText").append('<p class="text-right">' + id + ':' + msg + '</p>');	 
+			 } else {
+				 $("#mainText").append('<p>' + id + ':' + msg + '</p>');
+			 }
+			 //document.getElementById("mainText").innerText = 'Received: '+event.data;
+			 //document.getElementById("mainText").innerText = id + ':' + msg;
+			 
 		 };	
 		 ws.onclose = function () {
+			 alert('연결종료!');
+			 $(".joinChat").removeClass("hide");
+			 $(".textChat").addClass("hide");
 		    // document.getElementById("msg").innerText = 'Info: WebSocket connection closed.';
 		 }; 
 	}
 	
 	function send() {// JSON 문자열을 서버로 전송한다
-		var msg = {
+		//alert('메시지 전송!');
+		var msg = $("#chatText").val();
+	/* 	var msg = {
 			"nickName":"홍길동", "content":"test"
-		};
-		var jsonStr = JSON.stringify(msg);
-		ws.send(jsonStr);
+		}; */
+		//var jsonStr = JSON.stringify(msg);
+	//	ws.onopen = () => ws.send('hello');
+		//ws.send(jsonStr);
+		ws.send(msg);
+//		ws.send(message);
 	}
 	
 	function sendFile() {
